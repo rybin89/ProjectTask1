@@ -32,11 +32,11 @@ class GameItemController:
     @classmethod
     def search_stats(cls,stats):
         # Метод выводит список записей, если встречается характеристика stats
-        list = [] # создание пустого списка
+        # list = [] # создание пустого списка
         query = GameItem.select().where(GameItem.stats == stats) # переменной передаём список записей у которых в поле stats есть stats из аргумента метода
-        for item in query:
-            list.append(item.name)
-        return list
+        # for item in query:
+        #     list.append(item.name)
+        return query
 
 
 if __name__ == "__main__":
