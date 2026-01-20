@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-from peewee import text_type
+
 
 from Controllers.GameItemController import GameItemController
 
