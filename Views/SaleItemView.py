@@ -33,7 +33,8 @@ class SaleItemView(Tk):
         self.table_data.heading('stats', text='Характеристика')
         # Превращает объекты из БД в список кортежей для таблицы
         self.table()
-
+        # Для события выбора строки из таблицы вызову метод row_selected
+        self.table_data.bind("<<TreeviewSelect>>", self.row_selected)
         # Передача предмета
         self.sale_frame = ttk.Frame(self,padding=[20])
         self.sale_frame.pack(anchor=CENTER, padx=10,pady=10)
@@ -43,7 +44,7 @@ class SaleItemView(Tk):
         self.sale_entry = ttk.Entry(self.sale_frame)
         self.sale_entry.grid(row=1,column=0)
 
-        self.sale_button = ttk.Button(self.sale_frame,text="Передать")
+        self.sale_button = ttk.Button(self.sale_frame,text="Передать",command=self.update_player)
         self.sale_button.grid(row=1,column=1, padx=15)
 
         # Для обновления данных в таблице создал метод добавления записей из БД
@@ -63,6 +64,35 @@ class SaleItemView(Tk):
         for item in self.elemnt:
             self.table_data.insert("", END, values=item)
         self.table_data.pack()
+    def row_selected(self,event):
+        '''
+        метод передаст данные о выбранной записи - > передаст строку
+        :return:
+        '''
+        # с помощью метода selection() self.row передаётся спсиок из одной строки / [(id,name,..)]
+        # выделить одну строку с помощью [0] - индекса
+        # получить выбранные строки
+        selected = self.table_data.selection()
+
+        #Проверить, если строки не выбраны
+        if not selected:
+            return # завершить оаботу метода
+
+        self.row = self.table_data.selection()[0]
+
+        self.id = self.table_data.item(self.row,"values")[0]
+        return self.id
+    def update_player(self):
+        '''
+        из метода row_selected() получает id предмета
+        из окна sale_entry получает имя игрока
+        с помощью метода update из GameItemController менет имя игрока в записи таблицы БД
+        и обновляет таблицу с помощью метода table()
+        :return:
+        '''
+        GameItemController.update(id = self.id, player=self.sale_entry.get())
+
+        self.table()
 if __name__ == "__main__":
     win = SaleItemView()
     win.mainloop()
